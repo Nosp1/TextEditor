@@ -11,9 +11,11 @@ import editor.display.CharacterDisplay;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.HeadlessException;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
@@ -70,6 +72,7 @@ public class Editor extends JFrame {
         inputMap = display.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         actionMap = display.getActionMap();
         addKeyMappings();
+
         pack();
 
     }
@@ -89,51 +92,39 @@ public class Editor extends JFrame {
      * method in the action will be called
      *
      * @param keyStroke key to bind
-     * @param action action to bind the key to
+     * @param action    action to bind the key to
      */
     public void addKeyMapping(KeyStroke keyStroke, EditorAction action) {
         inputMap.put(keyStroke, action.getName());
         actionMap.put(action.getName(), action);
     }
 
+
     public void addKeyMappings() {
         inputMap.clear();
         actionMap.clear();
         char ch;
+        for (ch = 0x000; ch <= 0x007F; ch++) {
+            if (ch == 0x008 || ch == 0x007F) {
+                String name = "removeChar";
+                EditorAction remove = new RemoveAction(name, this);
+                addKeyMapping(KeyStroke.getKeyStroke(ch), remove);
 
-
-
-
-        for  (ch = '\b'; ch <= 'ø'; ch++) {
-            System.out.println(ch);
-
-            String name = "insertChar";
-            EditorAction action = new InsertAction(name, this);
-            addKeyMapping(KeyStroke.getKeyStroke(ch), action);
-
-
-            if(ch == '\b' ){
-                 name = "removeChar";
-                EditorAction actions = new RemoveAction(name,this);
-                addKeyMapping(KeyStroke.getKeyStroke(ch), actions);
-            } else if(ch == '\n'){
-                name = "shiftChar";
-                EditorAction shift = new LineshiftAction(name,this);
-                addKeyMapping(KeyStroke.getKeyStroke(ch),shift);
-            } else if(ch == '\t'){
-              name= "moveUp";
-              EditorAction action1 = new MovingUpAction(name, this);
-              addKeyMapping(KeyStroke.getKeyStroke(ch), action1);
+            } else if (ch == '\n') {
+                String name = "shiftChar";
+                EditorAction lineShift = new LineshiftAction(name, this);
+                addKeyMapping(KeyStroke.getKeyStroke(ch), lineShift);
+            } else if (ch == '\t') {
+                String name = "moveUp";
+                EditorAction moveUp = new MovingUpAction(name, this);
+                addKeyMapping(KeyStroke.getKeyStroke(ch), moveUp);
+            } else {
+                String name = "insertChar";
+                EditorAction action = new InsertAction(name, this);
+                addKeyMapping(KeyStroke.getKeyStroke(ch), action);
             }
-
-
-
-         }
         }
-
-
-
-
+    }
 
     public CharacterDisplay getDisplay() {
         return display;

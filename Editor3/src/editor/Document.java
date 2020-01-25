@@ -25,8 +25,6 @@ public class Document {
     private int cursorRow;
     private int cursorCol;
     private char[][] data;
-
-
     LinkedList<Character> cursorC = new LinkedList<>();
     LinkedList<Character> cursorR = new LinkedList<>();
 
@@ -37,52 +35,46 @@ public class Document {
     }
 
     public void insertChar(char c) {
+        System.out.println(c);
         //data[cursorRow][cursorCol] = c;
-        cursorR.add(cursorRow,c);
-        cursorC.add(cursorCol,c);
+        cursorR.add(cursorRow, c);
+        cursorC.add(cursorCol, c);
         display.displayChar(c, cursorRow, cursorCol);
         display.displayCursor(' ', cursorRow, cursorCol);
-        if(cursorCol == 39 && cursorRow == 19){}
-        else{
-        cursorCol++;
-        if (cursorCol >= CharacterDisplay.WIDTH) {
-            cursorCol = 0;
-            cursorRow++;
-         }
+        if (cursorCol == 39 && cursorRow == 19) {
+        } else {
+            cursorCol++;
+            if (cursorCol >= CharacterDisplay.WIDTH) {
+                cursorCol = 0;
+                cursorRow++;
+            }
         }
     }
 
-    public void removeChar(char c){
+    public void removeChar(char c) {
         cursorR.remove();
         cursorC.remove();
-
         display.displayChar(c, cursorRow, cursorCol);
-
-        if(cursorCol == 0 && cursorRow == 0){
-
-
-        }
-        else if (cursorCol == 0 && cursorRow >= 0)
-        {  cursorCol = 39;
-           cursorRow--;
-        }
-        else{
+        if (cursorCol == 0 && cursorRow == 0) {
+        } else if (cursorCol == 0 && cursorRow >= 0) {
+            cursorCol = 39;
+            cursorRow--;
+        } else {
             cursorCol--;
         }
         display.displayCursor(' ', cursorRow, cursorCol);
 
 
     }
-    public void shiftChar(char c){
-        cursorC.add(cursorCol,c) ;
-        cursorR.add(cursorRow,c);
+
+    public void shiftChar(char c) {
+        cursorC.add(cursorCol, c);
+        cursorR.add(cursorRow, c);
 
         display.displayChar(c, cursorRow, cursorCol);
-        if(cursorRow == 19){
+        if (cursorRow == 19) {
 
-        }
-        else
-        {
+        } else {
             cursorCol = 0;
             cursorRow++;
         }
@@ -90,27 +82,24 @@ public class Document {
         display.displayCursor(' ', cursorRow, cursorCol);
 
     }
-    public void moveUp(char c){
 
-        if(cursorRow == 0){
+    public void moveUp(char c) {
 
-        }
-        else if (cursorRow > 0)
-        {
+        if (cursorRow == 0) {
+
+        } else if (cursorRow > 0) {
             cursorRow--;
         }
-        display.displayCursor(data[cursorRow][cursorCol],cursorRow, cursorCol);
+        display.displayCursor(data[cursorRow][cursorCol], cursorRow, cursorCol);
     }
-    public void moveDown(){
 
-        if(cursorRow == 19){
+    public void moveDown() {
 
-        }
-        else if (cursorRow > 19)
-        {
+        if (cursorRow == 19) {
+
+        } else if (cursorRow > 19) {
             cursorRow++;
         }
-        display.displayCursor(data[cursorRow][cursorCol],cursorRow, cursorCol);
-
+        display.displayCursor(data[cursorRow][cursorCol], cursorRow, cursorCol);
     }
 }
