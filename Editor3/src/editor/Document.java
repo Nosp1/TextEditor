@@ -52,8 +52,10 @@ public class Document {
     }
 
     public void removeChar(char c) {
-        cursorR.remove();
-        cursorC.remove();
+        if (cursorC.contains(cursorCol) && cursorR.contains(cursorRow)) {
+            cursorR.remove();
+            cursorC.remove();
+        }
         display.displayChar(c, cursorRow, cursorCol);
         if (cursorCol == 0 && cursorRow == 0) {
         } else if (cursorCol == 0 && cursorRow >= 0) {
@@ -72,21 +74,20 @@ public class Document {
         cursorR.add(cursorRow, c);
 
         display.displayChar(c, cursorRow, cursorCol);
-        if (cursorRow == 19) {
-
-        } else {
+        if (cursorRow < 19) {
+            int ant = CharacterDisplay.WIDTH - cursorCol;
+            for (int i = 0; i < ant; i++) {
+                cursorC.add('c');
+            }
             cursorCol = 0;
             cursorRow++;
         }
-
         display.displayCursor(' ', cursorRow, cursorCol);
 
     }
 
     public void moveUp(char c) {
-
         if (cursorRow == 0) {
-
         } else if (cursorRow > 0) {
             cursorRow--;
         }
