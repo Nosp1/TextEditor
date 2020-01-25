@@ -8,20 +8,11 @@ package editor;
 import editor.action.*;
 import editor.display.CharacterDisplay;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.HeadlessException;
-import java.awt.event.InputEvent;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Arrays;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.KeyStroke;
-import javax.swing.WindowConstants;
 
 /**
  * Editor is the main class of the editor application. It is mainly responsible
@@ -31,22 +22,10 @@ import javax.swing.WindowConstants;
  */
 public class Editor extends JFrame {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-
-        Editor editor = new Editor();
-        editor.setVisible(true);
-
-        editor.doc = new Document(editor.display);
-    }
-
+    Document doc;
     private InputMap inputMap;
     private ActionMap actionMap;
     private CharacterDisplay display;
-    Document doc;
 
     public Editor() throws HeadlessException {
         super("Simple Text Editor");
@@ -77,6 +56,19 @@ public class Editor extends JFrame {
 
     }
 
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        System.out.println(System.getProperty("os.name"));
+        // TODO code application logic here
+
+        Editor editor = new Editor();
+        editor.setVisible(true);
+
+        editor.doc = new Document(editor.display);
+    }
+
     protected void exit() {
         for (java.awt.Window win : java.awt.Dialog.getWindows()) {
             win.dispose();
@@ -101,27 +93,39 @@ public class Editor extends JFrame {
 
 
     public void addKeyMappings() {
+        String os = System.getProperty("os.name");
+        System.out.println(os);
         inputMap.clear();
         actionMap.clear();
         char ch;
         for (ch = 0x000; ch <= 0x007F; ch++) {
-            if (ch == 0x008 || ch == 0x007F) {
-                String name = "removeChar";
-                EditorAction remove = new RemoveAction(name, this);
-                addKeyMapping(KeyStroke.getKeyStroke(ch), remove);
-
-            } else if (ch == '\n') {
-                String name = "shiftChar";
-                EditorAction lineShift = new LineshiftAction(name, this);
-                addKeyMapping(KeyStroke.getKeyStroke(ch), lineShift);
-            } else if (ch == '\t') {
-                String name = "moveUp";
-                EditorAction moveUp = new MovingUpAction(name, this);
-                addKeyMapping(KeyStroke.getKeyStroke(ch), moveUp);
-            } else {
-                String name = "insertChar";
-                EditorAction action = new InsertAction(name, this);
-                addKeyMapping(KeyStroke.getKeyStroke(ch), action);
+            if (os.toLowerCase().matches("windows 10")) {
+                if (ch == 0x007F) {
+                    String name = "removeChar";
+                     KeyStroke backspace = KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE,0,false);
+                    EditorAction remove = new RemoveAction(name, this);
+                    addKeyMapping(backspace, remove);
+                } else if (System.getProperty("os.name").toLowerCase().matches("mac os x")) {
+                    if (ch == 0x008 || ch == 0x007F) {
+                        String name = "removeChar";
+                        EditorAction remove = new RemoveAction(name, this);
+                        addKeyMapping(KeyStroke.getKeyStroke(ch), remove);
+                    }
+                } else if (ch == '\n') {
+                    String name = "shiftChar";
+                    EditorAction lineShift = new LineshiftAction(name, this);
+                    addKeyMapping(KeyStroke.getKeyStroke(ch), lineShift);
+                } else if (ch == '\t') {
+                    String name = "moveUp";
+                    EditorAction moveUp = new MovingUpAction(name, this);
+                    addKeyMapping(KeyStroke.getKeyStroke(ch), moveUp);
+                } else {
+                    if (ch != 0x008) {
+                        String name = "insertChar";
+                        EditorAction action = new InsertAction(name, this);
+                        addKeyMapping(KeyStroke.getKeyStroke(ch), action);
+                    }
+                }
             }
         }
     }
